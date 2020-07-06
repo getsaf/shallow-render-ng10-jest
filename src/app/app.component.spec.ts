@@ -1,31 +1,25 @@
-import { TestBed, async } from '@angular/core/testing';
 import { AppComponent } from './app.component';
+import { Shallow } from 'shallow-render';
+import { AppModule } from './app.module';
 
 describe('AppComponent', () => {
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [
-        AppComponent
-      ],
-    }).compileComponents();
-  }));
+  let shallow: Shallow<AppComponent>;
 
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
+  beforeEach(() => {
+    shallow = new Shallow(AppComponent, AppModule);
   });
 
-  it(`should have as title 'shallow-render-ng10-jest'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('shallow-render-ng10-jest');
+  it('should render title', async () => {
+    const { find } = await shallow.render();
+    expect(find('.content span')[0].nativeElement.textContent).toContain(
+      'shallow-render-ng10-jest app is running!'
+    );
   });
 
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('.content span').textContent).toContain('shallow-render-ng10-jest app is running!');
+  it('should render myInput', async () => {
+    const { find } = await shallow.render({
+      bind: { myInput: 'My Input Value' },
+    });
+    expect(find('.myInput').nativeElement.textContent).toBe('My Input Value');
   });
 });
